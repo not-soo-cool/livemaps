@@ -1,11 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { PureComponent, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, SafeAreaView, Platform, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, Platform, TouchableOpacity } from 'react-native'
 import MapView, { Callout, Marker, Polyline } from 'react-native-maps'
 import * as Location from 'expo-location';
-import { useNavigation } from '@react-navigation/native';
 import { useLowPowerMode } from 'expo-battery';
-import { Dialog, TextInput, Button } from 'react-native-paper';
+import { Dialog } from 'react-native-paper';
 
 const Home = () => {
 
@@ -58,7 +57,7 @@ const Home = () => {
 
     setTimeout(() => {
         fetchLocation();
-    }, 6000);
+    }, 600000);
 
     useEffect(() => {
         requestLocationPermissions();
@@ -85,7 +84,6 @@ const Home = () => {
         (Math.atan2(coord1.longitude - coord2.longitude, coord1.latitude - coord2.latitude) * 180) / Math.PI;
         return angle;
     };
-
 
     return (
         <>
@@ -132,8 +130,6 @@ const Home = () => {
                             <Marker
                                 key={index}
                                 coordinate={midpoint}
-                                // title={`Arrow ${index + 1}`}
-                                // description="Direction Arrow"
                                 anchor={{ x: 0.5, y: 0.5 }}
                                 rotation={rotation}
                             >
