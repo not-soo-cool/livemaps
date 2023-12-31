@@ -8,21 +8,25 @@ import { Dialog } from 'react-native-paper';
 
 const Home = () => {
 
+    const [currentLocation, setCurrentLocation] = useState({ latitude: 0, longitude: 0 });
+
+    // if(currentLocation.latitude === 0 && currentLocation.longitude === 0){
+    //     console.log("Current Location is 0");
+    //     Location.getCurrentPositionAsync({})
+    //     .then(result => {
+    //         console.log(result);
+    //         setCurrentLocation({'latitude': result.coords.latitude, 'longitude': result.coords.longitude})
+    //     })
+    //     // fetchLocation();
+    // }
+
     const lowPower = useLowPowerMode();
 
     const [activLocation, setActivLocation] = useState({});
 
     const [openDialog, setOpenDialog] = useState(false);
 
-    const [currentLocation, setCurrentLocation] = useState({ latitude: 0, longitude: 0 });
-
-    const [coordinates, setCoordinates] = useState([
-        {latitude: 26.8025259, longitude: 79.4351431, op: false},
-        {latitude: 26.7896386, longitude: 79.421646, op: false},
-        {latitude: 26.7665248, longitude: 79.4161628, op: false},
-        {latitude: 26.7734153, longitude: 79.4577787, op: false},
-        {latitude: 26.7948605, longitude: 79.4596065, op: false},
-    ]);
+    const [coordinates, setCoordinates] = useState([]);
 
     const requestLocationPermissions = async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -48,8 +52,6 @@ const Home = () => {
 
               setCoordinates([...coordinates, {'latitude': location.coords.latitude, 'longitude': location.coords.longitude, 'op': false }]);
           }
-
-
         } catch (error) {
           console.error('Error fetching location:', error);
         }
@@ -57,10 +59,14 @@ const Home = () => {
 
     setTimeout(() => {
         fetchLocation();
-    }, 600000);
+        console.log(coordinates.length)
+    }, 100);
 
     useEffect(() => {
         requestLocationPermissions();
+        if(currentLocation.latitude === 0 && currentLocation.longitude === 0){
+            fetchLocation();
+        }
     }, []);
 
     const openCall = async (coord) => {
@@ -98,8 +104,8 @@ const Home = () => {
             <MapView 
                 style={styles.okay}
                 region={{
-                    latitude: 26.78825,
-                    longitude: 79.4324,
+                    latitude: currentLocation.latitude !== 0 ? currentLocation.latitude : 26.7845 ,
+                    longitude: currentLocation.latitude !== 0 ? currentLocation.longitude : 79.4324,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}
@@ -118,7 +124,8 @@ const Home = () => {
                     </Marker>
                 ))}
 
-                {coordinates.map((coord, index) => {
+                {coordinates.length > 1 && 
+                (coordinates.map((coord, index) => {
 
                     const nextCoord = coordinates[index + 1];
                     if (nextCoord) {
@@ -140,7 +147,7 @@ const Home = () => {
                         );
                     }
                     return null;
-                })}
+                }))}
             </MapView>
         </View>
 
